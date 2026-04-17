@@ -1,38 +1,43 @@
-import Link from 'next/link'
-import { Plus, FolderPlus, ListPlus, CalendarPlus, FileUp } from 'lucide-react'
+"use client"
 
-const actions = [
-  {
-    title: 'Nou Projecte',
-    description: 'Crear un projecte nou',
-    href: '/projects/new',
-    icon: FolderPlus,
-    color: 'bg-primary/10 text-primary hover:bg-primary/20',
-  },
-  {
-    title: 'Nova Tasca',
-    description: 'Afegir una tasca',
-    href: '/tasks/new',
-    icon: ListPlus,
-    color: 'bg-accent/10 text-accent hover:bg-accent/20',
-  },
-  {
-    title: 'Nou Esdeveniment',
-    description: 'Programar al calendari',
-    href: '/calendar/new',
-    icon: CalendarPlus,
-    color: 'bg-warning/10 text-warning hover:bg-warning/20',
-  },
-  {
-    title: 'Pujar Document',
-    description: 'Afegir arxiu o plànol',
-    href: '/documents/new',
-    icon: FileUp,
-    color: 'bg-success/10 text-success hover:bg-success/20',
-  },
-]
+import Link from 'next/link'
+import { FolderPlus, ListPlus, CalendarPlus, FileUp } from 'lucide-react'
+import { useTranslation } from '@/lib/i18n/provider'
 
 export function QuickActions() {
+  const { t } = useTranslation()
+
+  const actions = [
+    {
+      title: t('dashboard.quickNewProject'),
+      description: t('dashboard.quickNewProjectDesc'),
+      href: '/projects/new',
+      icon: FolderPlus,
+      color: 'bg-primary/10 text-primary hover:bg-primary/20',
+    },
+    {
+      title: t('dashboard.quickNewTask'),
+      description: t('dashboard.quickNewTaskDesc'),
+      href: '/tasks/new',
+      icon: ListPlus,
+      color: 'bg-accent/10 text-accent hover:bg-accent/20',
+    },
+    {
+      title: t('dashboard.quickNewEvent'),
+      description: t('dashboard.quickNewEventDesc'),
+      href: '/calendar/new',
+      icon: CalendarPlus,
+      color: 'bg-warning/10 text-warning hover:bg-warning/20',
+    },
+    {
+      title: t('dashboard.quickUploadDoc'),
+      description: t('dashboard.quickUploadDocDesc'),
+      href: '/documents/new',
+      icon: FileUp,
+      color: 'bg-success/10 text-success hover:bg-success/20',
+    },
+  ]
+
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {actions.map((action) => (

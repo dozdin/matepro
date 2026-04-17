@@ -11,8 +11,10 @@ import {
   Activity,
 } from "lucide-react"
 import { useAppStore } from "@/lib/store"
+import { useTranslation } from "@/lib/i18n/provider"
 
 export function DashboardStats() {
+  const { t } = useTranslation()
   const projects = useAppStore((state) => state.projects)
   const tasks = useAppStore((state) => state.tasks)
   const users = useAppStore((state) => state.users)
@@ -36,65 +38,65 @@ export function DashboardStats() {
 
   const stats = [
     {
-      title: "Projectes Actius",
+      title: t("dashboard.activeProjects"),
       value: String(activeProjects),
-      change: `${projects.length} total`,
+      change: `${projects.length} ${t("dashboard.totalCount")}`,
       changeType: "positive" as const,
       icon: FolderKanban,
       color: "text-primary bg-primary/10",
     },
     {
-      title: "Tasques Totals",
+      title: t("dashboard.totalTasks"),
       value: String(tasks.length),
-      change: `${inProgressTasks} en curs`,
+      change: `${inProgressTasks} ${t("dashboard.inProgressCount")}`,
       changeType: "neutral" as const,
       icon: ListTodo,
       color: "text-accent bg-accent/10",
     },
     {
-      title: "Completades",
+      title: t("dashboard.completed"),
       value: String(completedTasks),
-      change: `${Math.round((completedTasks / Math.max(tasks.length, 1)) * 100)}% del total`,
+      change: `${Math.round((completedTasks / Math.max(tasks.length, 1)) * 100)}% ${t("dashboard.ofTotal")}`,
       changeType: "positive" as const,
       icon: CheckCircle2,
       color: "text-success bg-success/10",
     },
     {
-      title: "Pendents",
+      title: t("dashboard.pending"),
       value: String(pendingTasks),
-      change: overdueTasks > 0 ? `${overdueTasks} endarrerides` : "Sense retards",
+      change: overdueTasks > 0 ? `${overdueTasks} ${t("dashboard.withOverdue")}` : t("dashboard.noDelays"),
       changeType: overdueTasks > 0 ? ("negative" as const) : ("neutral" as const),
       icon: Clock,
       color: "text-warning bg-warning/10",
     },
     {
-      title: "Endarrerides",
+      title: t("dashboard.overdue"),
       value: String(overdueTasks),
-      change: overdueTasks > 0 ? "Requereix atencio" : "Al dia",
+      change: overdueTasks > 0 ? t("dashboard.needsAttention") : t("dashboard.onSchedule"),
       changeType: overdueTasks > 0 ? ("negative" as const) : ("positive" as const),
       icon: AlertTriangle,
       color: "text-destructive bg-destructive/10",
     },
     {
-      title: "Equip",
+      title: t("dashboard.team"),
       value: String(users.length),
-      change: `${activeUsers} actius`,
+      change: `${activeUsers} ${t("dashboard.activeMembers")}`,
       changeType: "positive" as const,
       icon: Users,
       color: "text-accent bg-accent/10",
     },
     {
-      title: "Progres Mitja",
+      title: t("dashboard.avgProgress"),
       value: `${averageProgress}%`,
-      change: "Tots els projectes",
+      change: t("dashboard.allProjects"),
       changeType: averageProgress >= 50 ? ("positive" as const) : ("neutral" as const),
       icon: TrendingUp,
       color: "text-success bg-success/10",
     },
     {
-      title: "Activitat",
+      title: t("dashboard.activity"),
       value: String(tasks.length + projects.length),
-      change: "Elements totals",
+      change: t("dashboard.totalItems"),
       changeType: "neutral" as const,
       icon: Activity,
       color: "text-primary bg-primary/10",

@@ -1,8 +1,8 @@
-import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core'
+import { pgTable, text, integer, real, boolean, timestamp, jsonb } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 // Users table
-export const users = sqliteTable('users', {
+export const users = pgTable('users', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
@@ -11,23 +11,23 @@ export const users = sqliteTable('users', {
   department: text('department'),
   avatarUrl: text('avatar_url'),
   phone: text('phone'),
-  isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
-  lastLogin: integer('last_login', { mode: 'timestamp' }),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  isActive: boolean('is_active').notNull().default(true),
+  lastLogin: timestamp('last_login', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Sessions table
-export const sessions = sqliteTable('sessions', {
+export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   token: text('token').notNull().unique(),
-  expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Projects table
-export const projects = sqliteTable('projects', {
+export const projects = pgTable('projects', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   code: text('code').notNull().unique(),
@@ -36,17 +36,17 @@ export const projects = sqliteTable('projects', {
   boatModel: text('boat_model'),
   status: text('status', { enum: ['planificacio', 'en_curs', 'pausat', 'completat', 'cancelat'] }).notNull().default('planificacio'),
   priority: text('priority', { enum: ['baixa', 'normal', 'alta', 'critica'] }).notNull().default('normal'),
-  startDate: integer('start_date', { mode: 'timestamp' }),
-  estimatedEndDate: integer('estimated_end_date', { mode: 'timestamp' }),
-  actualEndDate: integer('actual_end_date', { mode: 'timestamp' }),
+  startDate: timestamp('start_date', { withTimezone: true }),
+  estimatedEndDate: timestamp('estimated_end_date', { withTimezone: true }),
+  actualEndDate: timestamp('actual_end_date', { withTimezone: true }),
   progress: real('progress').notNull().default(0),
   managerId: text('manager_id').references(() => users.id),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Tasks table
-export const tasks = sqliteTable('tasks', {
+export const tasks = pgTable('tasks', {
   id: text('id').primaryKey(),
   projectId: text('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
   parentTaskId: text('parent_task_id'),
@@ -57,49 +57,49 @@ export const tasks = sqliteTable('tasks', {
   assigneeId: text('assignee_id').references(() => users.id),
   estimatedHours: real('estimated_hours'),
   actualHours: real('actual_hours'),
-  dueDate: integer('due_date', { mode: 'timestamp' }),
-  completedAt: integer('completed_at', { mode: 'timestamp' }),
+  dueDate: timestamp('due_date', { withTimezone: true }),
+  completedAt: timestamp('completed_at', { withTimezone: true }),
   position: integer('position').notNull().default(0),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Task comments
-export const taskComments = sqliteTable('task_comments', {
+export const taskComments = pgTable('task_comments', {
   id: text('id').primaryKey(),
   taskId: text('task_id').notNull().references(() => tasks.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull().references(() => users.id),
   content: text('content').notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Checklists
-export const checklists = sqliteTable('checklists', {
+export const checklists = pgTable('checklists', {
   id: text('id').primaryKey(),
   projectId: text('project_id').references(() => projects.id, { onDelete: 'cascade' }),
   taskId: text('task_id').references(() => tasks.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   description: text('description'),
   createdById: text('created_by_id').notNull().references(() => users.id),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Checklist items
-export const checklistItems = sqliteTable('checklist_items', {
+export const checklistItems = pgTable('checklist_items', {
   id: text('id').primaryKey(),
   checklistId: text('checklist_id').notNull().references(() => checklists.id, { onDelete: 'cascade' }),
   content: text('content').notNull(),
-  isCompleted: integer('is_completed', { mode: 'boolean' }).notNull().default(false),
+  isCompleted: boolean('is_completed').notNull().default(false),
   completedById: text('completed_by_id').references(() => users.id),
-  completedAt: integer('completed_at', { mode: 'timestamp' }),
+  completedAt: timestamp('completed_at', { withTimezone: true }),
   position: integer('position').notNull().default(0),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Documents
-export const documents = sqliteTable('documents', {
+export const documents = pgTable('documents', {
   id: text('id').primaryKey(),
   projectId: text('project_id').references(() => projects.id, { onDelete: 'cascade' }),
   taskId: text('task_id').references(() => tasks.id, { onDelete: 'cascade' }),
@@ -110,12 +110,12 @@ export const documents = sqliteTable('documents', {
   fileSize: integer('file_size').notNull(),
   category: text('category', { enum: ['planol', 'manual', 'certificat', 'foto', 'informe', 'altre'] }).notNull().default('altre'),
   uploadedById: text('uploaded_by_id').notNull().references(() => users.id),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Forum categories
-export const forumCategories = sqliteTable('forum_categories', {
+export const forumCategories = pgTable('forum_categories', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   description: text('description'),
@@ -123,28 +123,28 @@ export const forumCategories = sqliteTable('forum_categories', {
   color: text('color').notNull().default('#3b82f6'),
   icon: text('icon'),
   position: integer('position').notNull().default(0),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Forum threads
-export const forumThreads = sqliteTable('forum_threads', {
+export const forumThreads = pgTable('forum_threads', {
   id: text('id').primaryKey(),
   categoryId: text('category_id').notNull().references(() => forumCategories.id, { onDelete: 'cascade' }),
   authorId: text('author_id').notNull().references(() => users.id),
   title: text('title').notNull(),
   content: text('content').notNull(),
-  isPinned: integer('is_pinned', { mode: 'boolean' }).notNull().default(false),
-  isLocked: integer('is_locked', { mode: 'boolean' }).notNull().default(false),
+  isPinned: boolean('is_pinned').notNull().default(false),
+  isLocked: boolean('is_locked').notNull().default(false),
   viewCount: integer('view_count').notNull().default(0),
   replyCount: integer('reply_count').notNull().default(0),
-  lastReplyAt: integer('last_reply_at', { mode: 'timestamp' }),
+  lastReplyAt: timestamp('last_reply_at', { withTimezone: true }),
   lastReplyById: text('last_reply_by_id').references(() => users.id),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Forum replies
-export const forumReplies = sqliteTable('forum_replies', {
+export const forumReplies = pgTable('forum_replies', {
   id: text('id').primaryKey(),
   threadId: text('thread_id').notNull().references(() => forumThreads.id, { onDelete: 'cascade' }),
   parentReplyId: text('parent_reply_id'),
@@ -152,45 +152,45 @@ export const forumReplies = sqliteTable('forum_replies', {
   content: text('content').notNull(),
   upvotes: integer('upvotes').notNull().default(0),
   downvotes: integer('downvotes').notNull().default(0),
-  isAcceptedAnswer: integer('is_accepted_answer', { mode: 'boolean' }).notNull().default(false),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  isAcceptedAnswer: boolean('is_accepted_answer').notNull().default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Forum votes
-export const forumVotes = sqliteTable('forum_votes', {
+export const forumVotes = pgTable('forum_votes', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   threadId: text('thread_id').references(() => forumThreads.id, { onDelete: 'cascade' }),
   replyId: text('reply_id').references(() => forumReplies.id, { onDelete: 'cascade' }),
   voteType: integer('vote_type').notNull(), // 1 for upvote, -1 for downvote
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Chat rooms
-export const chatRooms = sqliteTable('chat_rooms', {
+export const chatRooms = pgTable('chat_rooms', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   description: text('description'),
   type: text('type', { enum: ['public', 'private', 'direct'] }).notNull().default('public'),
   projectId: text('project_id').references(() => projects.id, { onDelete: 'cascade' }),
   createdById: text('created_by_id').notNull().references(() => users.id),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Chat room members
-export const chatRoomMembers = sqliteTable('chat_room_members', {
+export const chatRoomMembers = pgTable('chat_room_members', {
   id: text('id').primaryKey(),
   roomId: text('room_id').notNull().references(() => chatRooms.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   role: text('role', { enum: ['admin', 'member'] }).notNull().default('member'),
-  joinedAt: integer('joined_at', { mode: 'timestamp' }).notNull(),
-  lastReadAt: integer('last_read_at', { mode: 'timestamp' }),
+  joinedAt: timestamp('joined_at', { withTimezone: true }).notNull().defaultNow(),
+  lastReadAt: timestamp('last_read_at', { withTimezone: true }),
 })
 
 // Chat messages
-export const chatMessages = sqliteTable('chat_messages', {
+export const chatMessages = pgTable('chat_messages', {
   id: text('id').primaryKey(),
   roomId: text('room_id').notNull().references(() => chatRooms.id, { onDelete: 'cascade' }),
   senderId: text('sender_id').notNull().references(() => users.id),
@@ -198,55 +198,55 @@ export const chatMessages = sqliteTable('chat_messages', {
   messageType: text('message_type', { enum: ['text', 'image', 'file', 'system'] }).notNull().default('text'),
   fileUrl: text('file_url'),
   replyToId: text('reply_to_id'),
-  isEdited: integer('is_edited', { mode: 'boolean' }).notNull().default(false),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  isEdited: boolean('is_edited').notNull().default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Notifications
-export const notifications = sqliteTable('notifications', {
+export const notifications = pgTable('notifications', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   type: text('type', { enum: ['task_assigned', 'task_updated', 'comment', 'mention', 'deadline', 'forum_reply', 'chat_message', 'system'] }).notNull(),
   title: text('title').notNull(),
   message: text('message').notNull(),
   link: text('link'),
-  isRead: integer('is_read', { mode: 'boolean' }).notNull().default(false),
-  metadata: text('metadata', { mode: 'json' }),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  isRead: boolean('is_read').notNull().default(false),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Activity log
-export const activityLog = sqliteTable('activity_log', {
+export const activityLog = pgTable('activity_log', {
   id: text('id').primaryKey(),
   userId: text('user_id').references(() => users.id),
   action: text('action').notNull(),
   entityType: text('entity_type').notNull(),
   entityId: text('entity_id'),
-  metadata: text('metadata', { mode: 'json' }),
+  metadata: jsonb('metadata'),
   ipAddress: text('ip_address'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Calendar events
-export const calendarEvents = sqliteTable('calendar_events', {
+export const calendarEvents = pgTable('calendar_events', {
   id: text('id').primaryKey(),
   title: text('title').notNull(),
   description: text('description'),
-  startDate: integer('start_date', { mode: 'timestamp' }).notNull(),
-  endDate: integer('end_date', { mode: 'timestamp' }).notNull(),
-  allDay: integer('all_day', { mode: 'boolean' }).notNull().default(false),
+  startDate: timestamp('start_date', { withTimezone: true }).notNull(),
+  endDate: timestamp('end_date', { withTimezone: true }).notNull(),
+  allDay: boolean('all_day').notNull().default(false),
   type: text('type', { enum: ['reunio', 'entrega', 'revisio', 'festiu', 'altre'] }).notNull().default('altre'),
   projectId: text('project_id').references(() => projects.id, { onDelete: 'cascade' }),
   taskId: text('task_id').references(() => tasks.id, { onDelete: 'cascade' }),
   createdById: text('created_by_id').notNull().references(() => users.id),
   color: text('color'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 // Calendar event attendees
-export const calendarEventAttendees = sqliteTable('calendar_event_attendees', {
+export const calendarEventAttendees = pgTable('calendar_event_attendees', {
   id: text('id').primaryKey(),
   eventId: text('event_id').notNull().references(() => calendarEvents.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),

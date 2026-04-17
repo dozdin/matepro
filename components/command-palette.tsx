@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useAppStore } from "@/lib/store"
+import { useTranslation } from "@/lib/i18n/provider"
 import { cn } from "@/lib/utils"
 import {
   Search,
@@ -38,31 +39,32 @@ type CommandItem = {
   keywords?: string[]
 }
 
-const PAGE_COMMANDS: CommandItem[] = [
-  { id: "dashboard", title: "Dashboard", category: "Pagines", href: "/dashboard", icon: <LayoutDashboard className="h-4 w-4" />, keywords: ["inici", "home"] },
-  { id: "projects", title: "Projectes", category: "Pagines", href: "/projects", icon: <FolderKanban className="h-4 w-4" /> },
-  { id: "tasks", title: "Tasques", category: "Pagines", href: "/tasks", icon: <ListTodo className="h-4 w-4" /> },
-  { id: "kanban", title: "Kanban", category: "Pagines", href: "/kanban", icon: <Columns3 className="h-4 w-4" /> },
-  { id: "calendar", title: "Calendari", category: "Pagines", href: "/calendar", icon: <Calendar className="h-4 w-4" /> },
-  { id: "checklists", title: "Checklists", category: "Pagines", href: "/checklists", icon: <CheckSquare className="h-4 w-4" /> },
-  { id: "documents", title: "Documents", category: "Pagines", href: "/documents", icon: <FileText className="h-4 w-4" /> },
-  { id: "forum", title: "Forum", category: "Pagines", href: "/forum", icon: <MessagesSquare className="h-4 w-4" /> },
-  { id: "chat", title: "Xat", category: "Pagines", href: "/chat", icon: <MessageSquare className="h-4 w-4" /> },
-  { id: "activity", title: "Activitat", category: "Analitica", href: "/activity", icon: <Activity className="h-4 w-4" /> },
-  { id: "reports", title: "Informes", category: "Analitica", href: "/reports", icon: <BarChart3 className="h-4 w-4" /> },
-  { id: "workload", title: "Carrega de treball", category: "Analitica", href: "/workload", icon: <Users className="h-4 w-4" /> },
-  { id: "compare", title: "Comparador de projectes", category: "Analitica", href: "/compare", icon: <Scale className="h-4 w-4" /> },
-  { id: "achievements", title: "Assoliments", category: "Analitica", href: "/achievements", icon: <Trophy className="h-4 w-4" /> },
-  { id: "notifications", title: "Notificacions", category: "Sistema", href: "/notifications", icon: <Bell className="h-4 w-4" /> },
-  { id: "settings", title: "Configuracio", category: "Sistema", href: "/settings", icon: <Settings className="h-4 w-4" /> },
-  { id: "admin", title: "Panel Admin", category: "Sistema", href: "/admin", icon: <Shield className="h-4 w-4" /> },
-]
-
 export function CommandPalette() {
   const router = useRouter()
+  const { t } = useTranslation()
   const projects = useAppStore((s) => s.projects)
   const tasks = useAppStore((s) => s.tasks)
   const users = useAppStore((s) => s.users)
+
+  const PAGE_COMMANDS: CommandItem[] = [
+    { id: "dashboard", title: t("nav.dashboard"), category: t("commandPalette.categoryPages"), href: "/dashboard", icon: <LayoutDashboard className="h-4 w-4" />, keywords: ["inici", "home", "dashboard"] },
+    { id: "projects", title: t("nav.projects"), category: t("commandPalette.categoryPages"), href: "/projects", icon: <FolderKanban className="h-4 w-4" /> },
+    { id: "tasks", title: t("nav.tasks"), category: t("commandPalette.categoryPages"), href: "/tasks", icon: <ListTodo className="h-4 w-4" /> },
+    { id: "kanban", title: t("nav.kanban"), category: t("commandPalette.categoryPages"), href: "/kanban", icon: <Columns3 className="h-4 w-4" /> },
+    { id: "calendar", title: t("nav.calendar"), category: t("commandPalette.categoryPages"), href: "/calendar", icon: <Calendar className="h-4 w-4" /> },
+    { id: "checklists", title: t("nav.checklists"), category: t("commandPalette.categoryPages"), href: "/checklists", icon: <CheckSquare className="h-4 w-4" /> },
+    { id: "documents", title: t("nav.documents"), category: t("commandPalette.categoryPages"), href: "/documents", icon: <FileText className="h-4 w-4" /> },
+    { id: "forum", title: t("nav.forum"), category: t("commandPalette.categoryPages"), href: "/forum", icon: <MessagesSquare className="h-4 w-4" /> },
+    { id: "chat", title: t("nav.chat"), category: t("commandPalette.categoryPages"), href: "/chat", icon: <MessageSquare className="h-4 w-4" /> },
+    { id: "activity", title: t("nav.activity"), category: t("commandPalette.categoryAnalytics"), href: "/activity", icon: <Activity className="h-4 w-4" /> },
+    { id: "reports", title: t("nav.reports"), category: t("commandPalette.categoryAnalytics"), href: "/reports", icon: <BarChart3 className="h-4 w-4" /> },
+    { id: "workload", title: t("nav.workload"), category: t("commandPalette.categoryAnalytics"), href: "/workload", icon: <Users className="h-4 w-4" /> },
+    { id: "compare", title: t("nav.compare"), category: t("commandPalette.categoryAnalytics"), href: "/compare", icon: <Scale className="h-4 w-4" /> },
+    { id: "achievements", title: t("nav.achievements"), category: t("commandPalette.categoryAnalytics"), href: "/achievements", icon: <Trophy className="h-4 w-4" /> },
+    { id: "notifications", title: t("nav.notifications"), category: t("commandPalette.categorySystem"), href: "/notifications", icon: <Bell className="h-4 w-4" /> },
+    { id: "settings", title: t("nav.settings"), category: t("commandPalette.categorySystem"), href: "/settings", icon: <Settings className="h-4 w-4" /> },
+    { id: "admin", title: t("nav.admin"), category: t("commandPalette.categorySystem"), href: "/admin", icon: <Shield className="h-4 w-4" /> },
+  ]
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -94,32 +96,33 @@ export function CommandPalette() {
       id: `project-${p.id}`,
       title: p.name,
       subtitle: `${p.code} • ${p.clientName}`,
-      category: "Projectes",
+      category: t("commandPalette.categoryProjects"),
       href: `/projects/${p.id}`,
       icon: <Anchor className="h-4 w-4" />,
       keywords: [p.code, p.clientName, p.status],
     }))
-    const taskCommands: CommandItem[] = tasks.slice(0, 40).map((t) => ({
-      id: `task-${t.id}`,
-      title: t.title,
-      subtitle: `${t.projectName || ""} • ${t.priority}`,
-      category: "Tasques",
-      href: `/tasks/${t.id}`,
+    const taskCommands: CommandItem[] = tasks.slice(0, 40).map((task) => ({
+      id: `task-${task.id}`,
+      title: task.title,
+      subtitle: `${task.projectName || ""} • ${task.priority}`,
+      category: t("commandPalette.categoryTasks"),
+      href: `/tasks/${task.id}`,
       icon: <ListTodo className="h-4 w-4" />,
-      keywords: [t.status, t.priority, t.assigneeName || ""],
+      keywords: [task.status, task.priority, task.assigneeName || ""],
     }))
     const userCommands: CommandItem[] = users.slice(0, 10).map((u) => ({
       id: `user-${u.id}`,
       title: u.name,
       subtitle: `${u.roleLabel} • ${u.department}`,
-      category: "Persones",
+      category: t("commandPalette.categoryPeople"),
       href: `/workload`,
       icon: <Users className="h-4 w-4" />,
       keywords: [u.email, u.role],
     }))
 
     return [...PAGE_COMMANDS, ...projectCommands, ...taskCommands, ...userCommands]
-  }, [projects, tasks, users])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projects, tasks, users, t])
 
   const filtered = useMemo(() => {
     if (!query.trim()) return allCommands.slice(0, 30)
@@ -180,7 +183,7 @@ export function CommandPalette() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Cerca projectes, tasques, persones o pagines..."
+            placeholder={t("commandPalette.placeholder")}
             className="flex-1 bg-transparent py-4 text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
           <kbd className="font-mono text-[10px] bg-muted px-1.5 py-0.5 rounded border border-border text-muted-foreground">
@@ -193,7 +196,7 @@ export function CommandPalette() {
           {filtered.length === 0 ? (
             <div className="py-12 text-center text-sm text-muted-foreground">
               <Search className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              Sense resultats per &quot;{query}&quot;
+              {t("commandPalette.noResultsFor")} &quot;{query}&quot;
             </div>
           ) : (
             Object.entries(grouped).map(([category, items]) => (
@@ -238,16 +241,16 @@ export function CommandPalette() {
             <span className="flex items-center gap-1">
               <kbd className="font-mono bg-card px-1 py-0.5 rounded border border-border">&uarr;</kbd>
               <kbd className="font-mono bg-card px-1 py-0.5 rounded border border-border">&darr;</kbd>
-              Navega
+              {t("common.navigate")}
             </span>
             <span className="flex items-center gap-1">
               <kbd className="font-mono bg-card px-1 py-0.5 rounded border border-border">&#x21B5;</kbd>
-              Obre
+              {t("common.open")}
             </span>
           </div>
           <div className="flex items-center gap-1">
             <CommandIcon className="h-3 w-3" />
-            <span>{filtered.length} resultats</span>
+            <span>{filtered.length} {t("common.results")}</span>
           </div>
         </div>
       </div>

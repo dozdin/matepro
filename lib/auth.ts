@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'astillero-pro-secret-key-change-in-production'
 
-// Demo mode: when TURSO_DATABASE_URL is not set, use mock authentication
-const IS_DEMO_MODE = !process.env.TURSO_DATABASE_URL
+// Demo mode: when DATABASE_URL (Neon) is not set, use mock authentication
+const IS_DEMO_MODE = !process.env.DATABASE_URL
 
 export type AuthUser = {
   id: string
@@ -17,27 +17,27 @@ export type AuthUser = {
 
 // Demo users for testing without database
 const DEMO_USERS: Record<string, AuthUser & { password: string }> = {
-  'admin@maximyachts.com': {
+  'admin@matepro.com': {
     id: 'demo-admin',
-    email: 'admin@maximyachts.com',
+    email: 'admin@matepro.com',
     name: 'Carlos Martinez',
     role: 'admin',
     department: 'Direccion',
     avatarUrl: null,
     password: 'admin123',
   },
-  'manager@maximyachts.com': {
+  'manager@matepro.com': {
     id: 'demo-manager',
-    email: 'manager@maximyachts.com',
+    email: 'manager@matepro.com',
     name: 'Ana Garcia',
     role: 'cap_projecte',
     department: 'Proyectos',
     avatarUrl: null,
     password: 'manager123',
   },
-  'operari@maximyachts.com': {
+  'operari@matepro.com': {
     id: 'demo-operari',
-    email: 'operari@maximyachts.com',
+    email: 'operari@matepro.com',
     name: 'Miguel Torres',
     role: 'operari',
     department: 'Produccion',

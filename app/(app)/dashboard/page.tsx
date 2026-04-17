@@ -7,29 +7,16 @@ import { GanttChart } from "@/components/dashboard/gantt-chart"
 import { ProductivitySpeedometer } from "@/components/dashboard/productivity-speedometer"
 import { ActivityHeatmap } from "@/components/dashboard/activity-heatmap"
 import { TaskBubbles } from "@/components/dashboard/task-bubbles"
+import { WelcomeHeader } from "@/components/dashboard/welcome-header"
 
 export default async function DashboardPage() {
   const user = await getSession()
-  const hour = new Date().getHours()
-  const greeting = hour < 12 ? "Bon dia" : hour < 20 ? "Bona tarda" : "Bona nit"
+  const firstName = user?.name?.split(" ")[0] ?? ""
 
   return (
     <div className="space-y-6">
       {/* Welcome header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            {greeting}, {user?.name.split(" ")[0]}!
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Aqui tens un resum de l&apos;activitat del drassana
-          </p>
-        </div>
-        <div className="text-sm text-muted-foreground bg-card border border-border rounded-lg px-3 py-1.5 flex items-center gap-2">
-          <kbd className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded border border-border">⌘K</kbd>
-          Paleta de comandes
-        </div>
-      </div>
+      <WelcomeHeader firstName={firstName} />
 
       {/* Stats grid */}
       <DashboardStats />
