@@ -22,6 +22,7 @@ import {
 } from "lucide-react"
 import { cn, formatRelativeTime } from "@/lib/utils"
 import { useAppStore, type Notification } from "@/lib/store"
+import { useTranslation } from "@/lib/i18n/provider"
 
 const NOTIFICATION_ICONS = {
   task: CheckCircle2,
@@ -39,14 +40,6 @@ const NOTIFICATION_COLORS = {
   system: "text-destructive bg-destructive/10",
 } as const
 
-const NOTIFICATION_LABELS = {
-  task: "Tasca",
-  mention: "Mencio",
-  project: "Projecte",
-  message: "Missatge",
-  system: "Sistema",
-} as const
-
 const PRIORITY_STYLES = {
   urgent: "border-l-destructive bg-destructive/5",
   high: "border-l-chart-3 bg-chart-3/5",
@@ -57,6 +50,7 @@ const PRIORITY_STYLES = {
 type TabId = "all" | "unread" | Notification["type"]
 
 export default function NotificationsPage() {
+  const { t } = useTranslation()
   const notifications = useAppStore((state) => state.notifications)
   const tasks = useAppStore((state) => state.tasks)
   const markNotificationRead = useAppStore((state) => state.markNotificationRead)
@@ -69,6 +63,14 @@ export default function NotificationsPage() {
   const [quickReply, setQuickReply] = useState<{ id: string; value: string } | null>(null)
 
   const now = Date.now()
+
+  const NOTIFICATION_LABELS: Record<Notification["type"], string> = {
+    task: t("notifications.typeTask"),
+    mention: t("notifications.typeMention"),
+    project: t("notifications.typeProject"),
+    message: t("notifications.typeMessage"),
+    system: t("notifications.typeSystem"),
+  }
 
   // Active = not snoozed, or snooze time has passed
   const activeNotifications = useMemo(
@@ -102,65 +104,69 @@ export default function NotificationsPage() {
     )
     const low = filteredNotifications.filter((n) => n.priority === "low")
     return [
-      { key: "urgent", label: "Urgent", items: urgent, icon: Flame, color: "text-destructive" },
-      { key: "high", label: "Prioritat alta", items: high, icon: Zap, color: "text-chart-3" },
-      { key: "normal", label: "Normal", items: normal, icon: Bell, color: "text-primary" },
-      { key: "low", label: "Baixa prioritat", items: low, icon: Bell, color: "text-muted-foreground" },
+      { key: "urgent", label: t("notifications.urgent"), items: urgent, icon: Flame, color: "text-destructive" },
+      { key: "high", label: t("notifications.highPriority"), items: high, icon: Zap, color: "text-chart-3" },
+      { key: "normal", label: t("notifications.normal"), items: normal, icon: Bell, color: "text-primary" },
+      { key: "low", label: t("notifications.lowPriority"), items: low, icon: Bell, color: "text-muted-foreground" },
     ].filter((g) => g.items.length > 0)
-  }, [filteredNotifications, filter])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredNotifications, filter, t])
 
   const handleMarkAllRead = () => {
     if (unreadCount === 0) return
     markAllNotificationsRead()
-    toast.success("Totes les notificacions marcades com a llegides")
+    toast.success(t("notifications.markAllReadDone"))
   }
 
   const handleSnooze = (id: string, hours: number) => {
     const until = new Date(Date.now() + hours * 60 * 60 * 1000).toISOString()
     snoozeNotification(id, until)
-    toast.success(`Notificacio posposada ${hours}h`)
+    toast.success(t("notifications.snoozed", { n: hours }))
   }
 
   const handleCompleteTask = (taskId: string, notifId: string) => {
     updateTask(taskId, { status: "completat" })
     markNotificationRead(notifId)
-    toast.success("Tasca marcada com a completada")
+    toast.success(t("notifications.taskCompleted"))
   }
 
   const handleQuickReply = (notifId: string) => {
     if (!quickReply?.value.trim()) return
     markNotificationRead(notifId)
     setQuickReply(null)
-    toast.success("Resposta enviada")
+    toast.success(t("notifications.replySent"))
   }
 
   const TABS: { id: TabId; label: string; icon?: React.ComponentType<{ className?: string }> }[] = [
-    { id: "all", label: "Totes", icon: Bell },
-    { id: "unread", label: "Sense llegir" },
-    { id: "task", label: "Tasques", icon: CheckCircle2 },
-    { id: "mention", label: "Mencions", icon: AtSign },
-    { id: "project", label: "Projectes", icon: FolderKanban },
-    { id: "message", label: "Missatges", icon: MessageSquare },
+    { id: "all", label: t("notifications.tabAll"), icon: Bell },
+    { id: "unread", label: t("notifications.tabUnread") },
+    { id: "task", label: t("notifications.tabTasks"), icon: CheckCircle2 },
+    { id: "mention", label: t("notifications.tabMentions"), icon: AtSign },
+    { id: "project", label: t("notifications.tabProjects"), icon: FolderKanban },
+    { id: "message", label: t("notifications.tabMessages"), icon: MessageSquare },
   ]
+
+  const unreadText =
+    unreadCount === 0
+      ? t("notifications.allRead")
+      : unreadCount === 1
+        ? t("notifications.unreadCount", { n: unreadCount })
+        : t("notifications.unreadCountMany", { n: unreadCount })
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-bold text-foreground">Notificacions</h1>
+            <h1 className="text-3xl font-bold text-foreground">{t("notifications.title")}</h1>
             {urgentCount > 0 && (
               <span className="flex items-center gap-1 px-2 py-1 bg-destructive/10 text-destructive text-xs font-medium rounded-full">
                 <Flame className="h-3 w-3" />
-                {urgentCount} urgent
+                {urgentCount} {t("notifications.urgent").toLowerCase()}
               </span>
             )}
           </div>
-          <p className="text-muted-foreground mt-1">
-            {unreadCount > 0
-              ? `Tens ${unreadCount} notificacio${unreadCount === 1 ? "" : "ns"} sense llegir`
-              : "Totes les notificacions llegides"}
-          </p>
+          <p className="text-muted-foreground mt-1">{unreadText}</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -169,12 +175,12 @@ export default function NotificationsPage() {
             className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted transition-colors disabled:opacity-50"
           >
             <Check className="h-4 w-4" />
-            Marcar tot llegit
+            {t("notifications.markAllRead")}
           </button>
           <Link
             href="/settings"
             className="rounded-lg border border-border p-2 hover:bg-muted transition-colors"
-            aria-label="Configuracio"
+            aria-label={t("notifications.settings")}
           >
             <Settings className="h-4 w-4" />
           </Link>
@@ -221,9 +227,9 @@ export default function NotificationsPage() {
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-3">
             <Bell className="h-6 w-6 text-muted-foreground" />
           </div>
-          <p className="font-medium">Cap notificacio</p>
+          <p className="font-medium">{t("notifications.noNotifications")}</p>
           <p className="text-sm text-muted-foreground mt-1">
-            {filter === "unread" ? "Estas al dia!" : "No hi ha notificacions per mostrar"}
+            {filter === "unread" ? t("notifications.allCaughtUp") : t("notifications.nothingToShow")}
           </p>
         </div>
       ) : (
@@ -284,7 +290,7 @@ export default function NotificationsPage() {
                               {!notification.read && (
                                 <span className="flex items-center gap-1 text-xs text-primary">
                                   <span className="h-2 w-2 bg-primary rounded-full" />
-                                  Nou
+                                  {t("notifications.new")}
                                 </span>
                               )}
                               <span className="text-xs text-muted-foreground">
@@ -294,10 +300,10 @@ export default function NotificationsPage() {
                             <button
                               onClick={() => {
                                 deleteNotification(notification.id)
-                                toast.success("Notificacio eliminada")
+                                toast.success(t("notifications.notificationDeleted"))
                               }}
                               className="p-1 hover:bg-destructive/10 rounded text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                              aria-label="Eliminar"
+                              aria-label={t("common.delete")}
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -321,7 +327,7 @@ export default function NotificationsPage() {
                               <input
                                 type="text"
                                 autoFocus
-                                placeholder="Escriu una resposta rapida..."
+                                placeholder={t("notifications.replyPlaceholder")}
                                 value={quickReply?.value ?? ""}
                                 onChange={(e) =>
                                   setQuickReply({ id: notification.id, value: e.target.value })
@@ -337,13 +343,13 @@ export default function NotificationsPage() {
                                 disabled={!quickReply?.value.trim()}
                                 className="px-3 py-2 bg-primary text-primary-foreground rounded-lg text-sm hover:bg-primary/90 disabled:opacity-50"
                               >
-                                Enviar
+                                {t("common.send")}
                               </button>
                               <button
                                 onClick={() => setQuickReply(null)}
                                 className="px-3 py-2 text-muted-foreground hover:text-foreground text-sm"
                               >
-                                Cancel
+                                {t("common.cancel")}
                               </button>
                             </div>
                           ) : (
@@ -357,7 +363,7 @@ export default function NotificationsPage() {
                                   className="flex items-center gap-1 px-3 py-1.5 bg-chart-5/10 text-chart-5 hover:bg-chart-5/20 rounded-lg text-xs font-medium transition-colors"
                                 >
                                   <CheckCircle2 className="h-3.5 w-3.5" />
-                                  Completar tasca
+                                  {t("notifications.completeTask")}
                                 </button>
                               )}
 
@@ -371,7 +377,7 @@ export default function NotificationsPage() {
                                   className="flex items-center gap-1 px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg text-xs font-medium transition-colors"
                                 >
                                   <Reply className="h-3.5 w-3.5" />
-                                  Respondre
+                                  {t("common.reply")}
                                 </button>
                               )}
 
@@ -385,7 +391,7 @@ export default function NotificationsPage() {
                                   className="flex items-center gap-1 px-3 py-1.5 bg-muted hover:bg-muted/80 rounded-lg text-xs font-medium transition-colors"
                                 >
                                   <ExternalLink className="h-3.5 w-3.5" />
-                                  Obrir
+                                  {t("notifications.openAction")}
                                   <ChevronRight className="h-3.5 w-3.5" />
                                 </Link>
                               )}
@@ -395,12 +401,12 @@ export default function NotificationsPage() {
                                 <button
                                   onClick={() => {
                                     markNotificationRead(notification.id)
-                                    toast.success("Marcada com a llegida")
+                                    toast.success(t("notifications.markedRead"))
                                   }}
                                   className="flex items-center gap-1 px-3 py-1.5 text-muted-foreground hover:bg-muted rounded-lg text-xs font-medium transition-colors"
                                 >
                                   <Check className="h-3.5 w-3.5" />
-                                  Llegida
+                                  {t("notifications.markRead")}
                                 </button>
                               )}
 
@@ -408,14 +414,14 @@ export default function NotificationsPage() {
                               <div className="relative group/snooze">
                                 <button className="flex items-center gap-1 px-3 py-1.5 text-muted-foreground hover:bg-muted rounded-lg text-xs font-medium transition-colors">
                                   <Clock className="h-3.5 w-3.5" />
-                                  Posposar
+                                  {t("notifications.snooze")}
                                 </button>
                                 <div className="absolute top-full left-0 mt-1 hidden group-hover/snooze:block z-10 bg-popover border border-border rounded-lg shadow-lg py-1 min-w-[140px]">
                                   {[
-                                    { h: 1, label: "1 hora" },
-                                    { h: 4, label: "4 hores" },
-                                    { h: 24, label: "Demà" },
-                                    { h: 24 * 7, label: "La propera setmana" },
+                                    { h: 1, label: t("notifications.oneHour") },
+                                    { h: 4, label: t("notifications.fourHours") },
+                                    { h: 24, label: t("common.tomorrow") },
+                                    { h: 24 * 7, label: t("notifications.nextWeek") },
                                   ].map((opt) => (
                                     <button
                                       key={opt.h}

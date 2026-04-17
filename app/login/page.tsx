@@ -3,9 +3,11 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Anchor, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { useTranslation } from '@/lib/i18n/provider'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -27,14 +29,14 @@ export default function LoginPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        setError(data.error || 'Error al iniciar sessió')
+        setError(data.error || t('login.errorGeneric'))
         return
       }
 
       router.push('/dashboard')
       router.refresh()
     } catch {
-      setError('Error de connexió. Intenta-ho de nou.')
+      setError(t('login.errorNetwork'))
     } finally {
       setLoading(false)
     }
@@ -49,7 +51,7 @@ export default function LoginPage() {
             <Anchor className="h-10 w-10 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">MatePro</h1>
-          <p className="mt-1 text-muted-foreground">Organitza, controla, flueix. - Sistema de Gestió</p>
+          <p className="mt-1 text-muted-foreground">{t('login.tagline')}</p>
         </div>
 
         {/* Login form */}
@@ -57,14 +59,14 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="mb-1.5 block text-sm font-medium">
-                Correu electrònic
+                {t('login.email')}
               </label>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="usuari@matepro.com"
+                placeholder={t('login.emailPlaceholder')}
                 required
                 className="h-11 w-full rounded-lg border border-input bg-input px-4 text-sm placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20"
               />
@@ -72,7 +74,7 @@ export default function LoginPage() {
 
             <div>
               <label htmlFor="password" className="mb-1.5 block text-sm font-medium">
-                Contrasenya
+                {t('login.password')}
               </label>
               <div className="relative">
                 <input
@@ -108,17 +110,17 @@ export default function LoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  Iniciant sessió...
+                  {t('login.signingIn')}
                 </>
               ) : (
-                'Iniciar sessió'
+                t('login.signIn')
               )}
             </button>
           </form>
 
           <div className="mt-6 border-t border-border pt-4">
             <p className="text-center text-sm text-muted-foreground mb-2">
-              Mode demo - Credencials de prova:
+              {t('login.demoMode')}
             </p>
             <div className="space-y-2">
               <button
@@ -126,7 +128,7 @@ export default function LoginPage() {
                 onClick={() => { setEmail('admin@matepro.com'); setPassword('admin123'); }}
                 className="w-full rounded-lg bg-muted/50 p-2 text-left text-sm hover:bg-muted transition-colors"
               >
-                <span className="font-medium text-foreground">Admin:</span>{' '}
+                <span className="font-medium text-foreground">{t('login.admin')}:</span>{' '}
                 <span className="text-muted-foreground">admin@matepro.com / admin123</span>
               </button>
               <button
@@ -134,7 +136,7 @@ export default function LoginPage() {
                 onClick={() => { setEmail('manager@matepro.com'); setPassword('manager123'); }}
                 className="w-full rounded-lg bg-muted/50 p-2 text-left text-sm hover:bg-muted transition-colors"
               >
-                <span className="font-medium text-foreground">Project Manager:</span>{' '}
+                <span className="font-medium text-foreground">{t('login.projectManager')}:</span>{' '}
                 <span className="text-muted-foreground">manager@matepro.com / manager123</span>
               </button>
               <button
@@ -142,7 +144,7 @@ export default function LoginPage() {
                 onClick={() => { setEmail('operari@matepro.com'); setPassword('operari123'); }}
                 className="w-full rounded-lg bg-muted/50 p-2 text-left text-sm hover:bg-muted transition-colors"
               >
-                <span className="font-medium text-foreground">Operari:</span>{' '}
+                <span className="font-medium text-foreground">{t('login.worker')}:</span>{' '}
                 <span className="text-muted-foreground">operari@matepro.com / operari123</span>
               </button>
             </div>
@@ -150,7 +152,7 @@ export default function LoginPage() {
         </div>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} MatePro. Tots els drets reservats.
+          &copy; {new Date().getFullYear()} MatePro. {t('login.allRightsReserved')}
         </p>
       </div>
     </div>

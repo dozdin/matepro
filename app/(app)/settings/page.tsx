@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import { useTheme } from "@/components/theme-provider"
+import { useTranslation } from "@/lib/i18n/provider"
+import { LOCALES, LOCALE_META, type Locale } from "@/lib/i18n/config"
 import { 
   User,
   Bell,
@@ -22,20 +24,13 @@ import { cn } from "@/lib/utils"
 
 type SettingsTab = "profile" | "notifications" | "security" | "appearance" | "language"
 
-const TABS = [
-  { id: "profile" as SettingsTab, label: "Perfil", icon: User },
-  { id: "notifications" as SettingsTab, label: "Notificaciones", icon: Bell },
-  { id: "security" as SettingsTab, label: "Seguridad", icon: Shield },
-  { id: "appearance" as SettingsTab, label: "Apariencia", icon: Palette },
-  { id: "language" as SettingsTab, label: "Idioma", icon: Globe },
-]
-
 function ProfileTab() {
+  const { t } = useTranslation()
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-foreground mb-1">Informacion personal</h3>
-        <p className="text-sm text-muted-foreground">Actualiza tu informacion de perfil</p>
+        <h3 className="text-lg font-semibold text-foreground mb-1">{t("settings.profileTitle")}</h3>
+        <p className="text-sm text-muted-foreground">{t("settings.profileSubtitle")}</p>
       </div>
 
       <div className="flex items-start gap-6">
@@ -50,7 +45,7 @@ function ProfileTab() {
         <div className="flex-1 grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
-              Nombre
+              {t("settings.firstName")}
             </label>
             <input
               type="text"
@@ -60,7 +55,7 @@ function ProfileTab() {
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
-              Apellidos
+              {t("settings.lastName")}
             </label>
             <input
               type="text"
@@ -70,7 +65,7 @@ function ProfileTab() {
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
-              Email
+              {t("settings.email")}
             </label>
             <input
               type="email"
@@ -80,7 +75,7 @@ function ProfileTab() {
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
-              Telefono
+              {t("settings.phone")}
             </label>
             <input
               type="tel"
@@ -90,7 +85,7 @@ function ProfileTab() {
           </div>
           <div className="col-span-2">
             <label className="block text-sm font-medium text-foreground mb-1">
-              Cargo / Rol
+              {t("settings.role")}
             </label>
             <input
               type="text"
@@ -101,7 +96,7 @@ function ProfileTab() {
           </div>
           <div className="col-span-2">
             <label className="block text-sm font-medium text-foreground mb-1">
-              Departamento
+              {t("settings.department")}
             </label>
             <input
               type="text"
@@ -117,38 +112,39 @@ function ProfileTab() {
 }
 
 function NotificationsTab() {
+  const { t } = useTranslation()
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-foreground mb-1">Preferencias de notificaciones</h3>
-        <p className="text-sm text-muted-foreground">Configura como quieres recibir las notificaciones</p>
+        <h3 className="text-lg font-semibold text-foreground mb-1">{t("settings.notifTitle")}</h3>
+        <p className="text-sm text-muted-foreground">{t("settings.notifSubtitle")}</p>
       </div>
 
       <div className="space-y-4">
         <div className="bg-card rounded-lg border border-border p-4">
           <h4 className="font-medium text-foreground mb-4 flex items-center gap-2">
             <Mail className="h-4 w-4 text-primary" />
-            Notificaciones por email
+            {t("settings.emailNotifs")}
           </h4>
           <div className="space-y-3">
             <label className="flex items-center justify-between">
-              <span className="text-sm text-foreground">Tareas asignadas</span>
+              <span className="text-sm text-foreground">{t("settings.notifAssignedTasks")}</span>
               <input type="checkbox" defaultChecked className="w-4 h-4 accent-primary" />
             </label>
             <label className="flex items-center justify-between">
-              <span className="text-sm text-foreground">Menciones en foro</span>
+              <span className="text-sm text-foreground">{t("settings.notifForumMentions")}</span>
               <input type="checkbox" defaultChecked className="w-4 h-4 accent-primary" />
             </label>
             <label className="flex items-center justify-between">
-              <span className="text-sm text-foreground">Mensajes directos</span>
+              <span className="text-sm text-foreground">{t("settings.notifDirectMessages")}</span>
               <input type="checkbox" defaultChecked className="w-4 h-4 accent-primary" />
             </label>
             <label className="flex items-center justify-between">
-              <span className="text-sm text-foreground">Recordatorios de calendario</span>
+              <span className="text-sm text-foreground">{t("settings.notifCalendarReminders")}</span>
               <input type="checkbox" defaultChecked className="w-4 h-4 accent-primary" />
             </label>
             <label className="flex items-center justify-between">
-              <span className="text-sm text-foreground">Resumen semanal</span>
+              <span className="text-sm text-foreground">{t("settings.notifWeeklyDigest")}</span>
               <input type="checkbox" className="w-4 h-4 accent-primary" />
             </label>
           </div>
@@ -157,19 +153,19 @@ function NotificationsTab() {
         <div className="bg-card rounded-lg border border-border p-4">
           <h4 className="font-medium text-foreground mb-4 flex items-center gap-2">
             <Smartphone className="h-4 w-4 text-primary" />
-            Notificaciones push
+            {t("settings.pushNotifs")}
           </h4>
           <div className="space-y-3">
             <label className="flex items-center justify-between">
-              <span className="text-sm text-foreground">Mensajes de chat</span>
+              <span className="text-sm text-foreground">{t("settings.notifChatMessages")}</span>
               <input type="checkbox" defaultChecked className="w-4 h-4 accent-primary" />
             </label>
             <label className="flex items-center justify-between">
-              <span className="text-sm text-foreground">Alertas de seguridad</span>
+              <span className="text-sm text-foreground">{t("settings.notifSecurityAlerts")}</span>
               <input type="checkbox" defaultChecked className="w-4 h-4 accent-primary" />
             </label>
             <label className="flex items-center justify-between">
-              <span className="text-sm text-foreground">Actualizaciones de proyectos</span>
+              <span className="text-sm text-foreground">{t("settings.notifProjectUpdates")}</span>
               <input type="checkbox" className="w-4 h-4 accent-primary" />
             </label>
           </div>
@@ -180,23 +176,24 @@ function NotificationsTab() {
 }
 
 function SecurityTab() {
+  const { t } = useTranslation()
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-foreground mb-1">Seguridad de la cuenta</h3>
-        <p className="text-sm text-muted-foreground">Gestiona la seguridad de tu cuenta</p>
+        <h3 className="text-lg font-semibold text-foreground mb-1">{t("settings.securityTitle")}</h3>
+        <p className="text-sm text-muted-foreground">{t("settings.securitySubtitle")}</p>
       </div>
 
       <div className="space-y-4">
         <div className="bg-card rounded-lg border border-border p-4">
           <h4 className="font-medium text-foreground mb-4 flex items-center gap-2">
             <Key className="h-4 w-4 text-primary" />
-            Cambiar contrasena
+            {t("settings.changePassword")}
           </h4>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
-                Contrasena actual
+                {t("settings.currentPassword")}
               </label>
               <input
                 type="password"
@@ -205,7 +202,7 @@ function SecurityTab() {
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
-                Nueva contrasena
+                {t("settings.newPassword")}
               </label>
               <input
                 type="password"
@@ -214,7 +211,7 @@ function SecurityTab() {
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
-                Confirmar nueva contrasena
+                {t("settings.confirmPassword")}
               </label>
               <input
                 type="password"
@@ -222,7 +219,7 @@ function SecurityTab() {
               />
             </div>
             <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
-              Actualizar contrasena
+              {t("settings.updatePassword")}
             </button>
           </div>
         </div>
@@ -230,25 +227,25 @@ function SecurityTab() {
         <div className="bg-card rounded-lg border border-border p-4">
           <h4 className="font-medium text-foreground mb-4 flex items-center gap-2">
             <Shield className="h-4 w-4 text-primary" />
-            Autenticacion de dos factores
+            {t("settings.twoFactor")}
           </h4>
           <p className="text-sm text-muted-foreground mb-4">
-            Anade una capa extra de seguridad a tu cuenta
+            {t("settings.twoFactorDesc")}
           </p>
           <button className="px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 transition-colors">
-            Configurar 2FA
+            {t("settings.setupTwoFactor")}
           </button>
         </div>
 
         <div className="bg-card rounded-lg border border-border p-4">
-          <h4 className="font-medium text-foreground mb-4">Sesiones activas</h4>
+          <h4 className="font-medium text-foreground mb-4">{t("settings.activeSessions")}</h4>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-foreground">Este dispositivo</p>
-                <p className="text-xs text-muted-foreground">Chrome en Windows - Ultima actividad: Ahora</p>
+                <p className="text-sm font-medium text-foreground">{t("settings.thisDevice")}</p>
+                <p className="text-xs text-muted-foreground">{t("settings.lastActivityNow")}</p>
               </div>
-              <span className="px-2 py-1 text-xs bg-success/15 text-success rounded-full">Actual</span>
+              <span className="px-2 py-1 text-xs bg-success/15 text-success rounded-full">{t("settings.currentSession")}</span>
             </div>
           </div>
         </div>
@@ -259,6 +256,7 @@ function SecurityTab() {
 
 function AppearanceTab() {
   const { theme, setTheme } = useTheme()
+  const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   const current = mounted ? (theme as "light" | "dark" | "system") : "dark"
@@ -267,22 +265,22 @@ function AppearanceTab() {
     setTheme(value)
     toast.success(
       value === "light"
-        ? "Tema clar activat"
+        ? t("theme.lightActivated")
         : value === "dark"
-          ? "Tema fosc activat"
-          : "Tema del sistema activat",
+          ? t("theme.darkActivated")
+          : t("theme.systemActivated"),
     )
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-foreground mb-1">Apariencia</h3>
-        <p className="text-sm text-muted-foreground">Personaliza el aspecto de la aplicacion</p>
+        <h3 className="text-lg font-semibold text-foreground mb-1">{t("settings.appearanceTitle")}</h3>
+        <p className="text-sm text-muted-foreground">{t("settings.appearanceSubtitle")}</p>
       </div>
 
       <div className="bg-card rounded-lg border border-border p-4">
-        <h4 className="font-medium text-foreground mb-4">Tema</h4>
+        <h4 className="font-medium text-foreground mb-4">{t("settings.theme")}</h4>
         <div className="grid grid-cols-3 gap-4">
           <button
             onClick={() => applyTheme("light")}
@@ -294,7 +292,7 @@ function AppearanceTab() {
             )}
           >
             <Sun className="h-6 w-6" />
-            <span className="text-sm">Claro</span>
+            <span className="text-sm">{t("theme.light")}</span>
           </button>
           <button
             onClick={() => applyTheme("dark")}
@@ -306,7 +304,7 @@ function AppearanceTab() {
             )}
           >
             <Moon className="h-6 w-6" />
-            <span className="text-sm">Oscuro</span>
+            <span className="text-sm">{t("theme.dark")}</span>
           </button>
           <button
             onClick={() => applyTheme("system")}
@@ -318,19 +316,18 @@ function AppearanceTab() {
             )}
           >
             <Monitor className="h-6 w-6" />
-            <span className="text-sm">Sistema</span>
+            <span className="text-sm">{t("theme.system")}</span>
           </button>
         </div>
       </div>
 
       <div className="bg-card rounded-lg border border-border p-4">
-        <h4 className="font-medium text-foreground mb-4">Color de acento</h4>
+        <h4 className="font-medium text-foreground mb-4">{t("settings.accentColor")}</h4>
         <div className="flex items-center gap-3">
-          <button className="w-8 h-8 rounded-full bg-blue-600 ring-2 ring-offset-2 ring-offset-background ring-blue-600" />
-          <button className="w-8 h-8 rounded-full bg-orange-500 hover:ring-2 ring-offset-2 ring-offset-background ring-orange-500 transition-all" />
-          <button className="w-8 h-8 rounded-full bg-green-500 hover:ring-2 ring-offset-2 ring-offset-background ring-green-500 transition-all" />
-          <button className="w-8 h-8 rounded-full bg-purple-500 hover:ring-2 ring-offset-2 ring-offset-background ring-purple-500 transition-all" />
-          <button className="w-8 h-8 rounded-full bg-red-500 hover:ring-2 ring-offset-2 ring-offset-background ring-red-500 transition-all" />
+          <button aria-label="Blue" className="w-8 h-8 rounded-full bg-blue-600 ring-2 ring-offset-2 ring-offset-background ring-blue-600" />
+          <button aria-label="Orange" className="w-8 h-8 rounded-full bg-orange-500 hover:ring-2 ring-offset-2 ring-offset-background ring-orange-500 transition-all" />
+          <button aria-label="Green" className="w-8 h-8 rounded-full bg-green-500 hover:ring-2 ring-offset-2 ring-offset-background ring-green-500 transition-all" />
+          <button aria-label="Red" className="w-8 h-8 rounded-full bg-red-500 hover:ring-2 ring-offset-2 ring-offset-background ring-red-500 transition-all" />
         </div>
       </div>
     </div>
@@ -338,28 +335,57 @@ function AppearanceTab() {
 }
 
 function LanguageTab() {
+  const { t, locale, setLocale } = useTranslation()
+
+  const handleLocaleChange = (value: Locale) => {
+    setLocale(value)
+    toast.success(t("settings.saved"))
+  }
+
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-foreground mb-1">Idioma y region</h3>
-        <p className="text-sm text-muted-foreground">Configura tus preferencias de idioma</p>
+        <h3 className="text-lg font-semibold text-foreground mb-1">{t("settings.languageTitle")}</h3>
+        <p className="text-sm text-muted-foreground">{t("settings.languageSubtitle")}</p>
       </div>
 
       <div className="bg-card rounded-lg border border-border p-4 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
-            Idioma de la interfaz
+          <label className="block text-sm font-medium text-foreground mb-2">
+            {t("settings.interfaceLanguage")}
           </label>
-          <select className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50">
-            <option>Espanol (Espana)</option>
-            <option>Catalan</option>
-            <option>English (US)</option>
-            <option>English (UK)</option>
-          </select>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {LOCALES.map((code) => {
+              const meta = LOCALE_META[code]
+              const isActive = locale === code
+              return (
+                <button
+                  key={code}
+                  type="button"
+                  onClick={() => handleLocaleChange(code)}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-lg border text-left transition-colors",
+                    isActive
+                      ? "border-primary bg-primary/10"
+                      : "border-border hover:border-muted-foreground/50 bg-background",
+                  )}
+                >
+                  <span className="text-2xl" aria-hidden="true">{meta.flag}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-foreground">{meta.nativeLabel}</div>
+                    <div className="text-xs text-muted-foreground">{meta.label}</div>
+                  </div>
+                  {isActive && (
+                    <span className="text-xs font-medium text-primary">●</span>
+                  )}
+                </button>
+              )
+            })}
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-foreground mb-1">
-            Formato de fecha
+            {t("settings.dateFormat")}
           </label>
           <select className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50">
             <option>DD/MM/YYYY</option>
@@ -369,20 +395,20 @@ function LanguageTab() {
         </div>
         <div>
           <label className="block text-sm font-medium text-foreground mb-1">
-            Formato de hora
+            {t("settings.timeFormat")}
           </label>
           <select className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50">
-            <option>24 horas (14:30)</option>
-            <option>12 horas (2:30 PM)</option>
+            <option>{t("settings.time24")}</option>
+            <option>{t("settings.time12")}</option>
           </select>
         </div>
         <div>
           <label className="block text-sm font-medium text-foreground mb-1">
-            Primer dia de la semana
+            {t("settings.firstDayOfWeek")}
           </label>
           <select className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50">
-            <option>Lunes</option>
-            <option>Domingo</option>
+            <option>{t("settings.monday")}</option>
+            <option>{t("settings.sunday")}</option>
           </select>
         </div>
       </div>
@@ -391,13 +417,22 @@ function LanguageTab() {
 }
 
 export default function SettingsPage() {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<SettingsTab>("profile")
   const [saving, setSaving] = useState(false)
+
+  const TABS = [
+    { id: "profile" as SettingsTab, label: t("settings.tabProfile"), icon: User },
+    { id: "notifications" as SettingsTab, label: t("settings.tabNotifications"), icon: Bell },
+    { id: "security" as SettingsTab, label: t("settings.tabSecurity"), icon: Shield },
+    { id: "appearance" as SettingsTab, label: t("settings.tabAppearance"), icon: Palette },
+    { id: "language" as SettingsTab, label: t("settings.tabLanguage"), icon: Globe },
+  ]
 
   const handleSave = async () => {
     setSaving(true)
     await new Promise((resolve) => setTimeout(resolve, 600))
-    toast.success("Configuracio guardada correctament")
+    toast.success(t("settings.saved"))
     setSaving(false)
   }
 
@@ -406,9 +441,9 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Configuracio</h1>
+          <h1 className="text-3xl font-bold text-foreground">{t("settings.title")}</h1>
           <p className="text-muted-foreground mt-1">
-            Gestiona les teves preferencies personals
+            {t("settings.subtitle")}
           </p>
         </div>
         <button
@@ -417,7 +452,7 @@ export default function SettingsPage() {
           className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
           <Save className="h-4 w-4" />
-          {saving ? "Guardant..." : "Guardar canvis"}
+          {saving ? t("common.saving") : t("settings.saveChanges")}
         </button>
       </div>
 

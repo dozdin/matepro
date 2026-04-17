@@ -10,6 +10,7 @@ type ThemeValue = "light" | "dark" | "system"
 
 export function ThemeToggle() {
   const { theme, resolvedTheme, setTheme } = useTheme()
+  const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -28,9 +29,9 @@ export function ThemeToggle() {
   const isDark = mounted ? resolvedTheme === "dark" : true
 
   const options: { value: ThemeValue; label: string; icon: React.ReactNode }[] = [
-    { value: "light", label: "Clar", icon: <Sun className="h-4 w-4" /> },
-    { value: "dark", label: "Fosc", icon: <Moon className="h-4 w-4" /> },
-    { value: "system", label: "Sistema", icon: <Monitor className="h-4 w-4" /> },
+    { value: "light", label: t("theme.light"), icon: <Sun className="h-4 w-4" /> },
+    { value: "dark", label: t("theme.dark"), icon: <Moon className="h-4 w-4" /> },
+    { value: "system", label: t("theme.system"), icon: <Monitor className="h-4 w-4" /> },
   ]
 
   return (
@@ -38,8 +39,8 @@ export function ThemeToggle() {
       <button
         onClick={() => setOpen((v) => !v)}
         className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-        aria-label="Canviar tema"
-        title="Canviar tema"
+        aria-label={t("header.changeTheme")}
+        title={t("header.changeTheme")}
       >
         {isDark ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
       </button>
