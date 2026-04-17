@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'astillero-pro-secret-key-change-in-production'
 
-// Demo mode: when TURSO_DATABASE_URL is not set, use mock authentication
-const IS_DEMO_MODE = !process.env.TURSO_DATABASE_URL
+// Demo mode: when DATABASE_URL (Neon) is not set, use mock authentication
+const IS_DEMO_MODE = !process.env.DATABASE_URL
 
 export type AuthUser = {
   id: string
