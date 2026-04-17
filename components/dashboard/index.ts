@@ -1,0 +1,5 @@
+export { DashboardStats } from './stats'
+export { RecentProjects } from './recent-projects'
+export { UpcomingTasks } from './upcoming-tasks'
+export { ActivityFeed } from './activity-feed'
+export { QuickActions } from './quick-actions'
