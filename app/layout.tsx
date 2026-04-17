@@ -4,6 +4,7 @@ import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ThemedToaster } from '@/components/themed-toaster'
+import { I18nProvider } from '@/lib/i18n/provider'
 import './globals.css'
 
 const inter = Inter({
@@ -65,10 +66,12 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground`}>
-        <ThemeProvider defaultTheme="dark">
-          {children}
-          <ThemedToaster />
-        </ThemeProvider>
+        <I18nProvider>
+          <ThemeProvider defaultTheme="dark">
+            {children}
+            <ThemedToaster />
+          </ThemeProvider>
+        </I18nProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

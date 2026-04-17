@@ -25,9 +25,11 @@ import {
   Trophy,
 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from '@/lib/i18n/provider'
+import type { TranslationKey } from '@/lib/i18n/provider'
 
 type NavItem = {
-  title: string
+  titleKey: TranslationKey
   href: string
   icon: React.ReactNode
   badge?: number
@@ -35,92 +37,28 @@ type NavItem = {
 }
 
 const navItems: NavItem[] = [
-  {
-    title: 'Dashboard',
-    href: '/dashboard',
-    icon: <LayoutDashboard className="h-5 w-5" />,
-  },
-  {
-    title: 'Projectes',
-    href: '/projects',
-    icon: <FolderKanban className="h-5 w-5" />,
-  },
-  {
-    title: 'Tasques',
-    href: '/tasks',
-    icon: <ListTodo className="h-5 w-5" />,
-  },
-  {
-    title: 'Kanban',
-    href: '/kanban',
-    icon: <Columns3 className="h-5 w-5" />,
-  },
-  {
-    title: 'Calendari',
-    href: '/calendar',
-    icon: <Calendar className="h-5 w-5" />,
-  },
-  {
-    title: 'Checklists',
-    href: '/checklists',
-    icon: <CheckSquare className="h-5 w-5" />,
-  },
-  {
-    title: 'Documents',
-    href: '/documents',
-    icon: <FileText className="h-5 w-5" />,
-  },
-  {
-    title: 'Fòrum',
-    href: '/forum',
-    icon: <MessagesSquare className="h-5 w-5" />,
-  },
-  {
-    title: 'Xat',
-    href: '/chat',
-    icon: <MessageSquare className="h-5 w-5" />,
-  },
+  { titleKey: 'nav.dashboard', href: '/dashboard', icon: <LayoutDashboard className="h-5 w-5" /> },
+  { titleKey: 'nav.projects', href: '/projects', icon: <FolderKanban className="h-5 w-5" /> },
+  { titleKey: 'nav.tasks', href: '/tasks', icon: <ListTodo className="h-5 w-5" /> },
+  { titleKey: 'nav.kanban', href: '/kanban', icon: <Columns3 className="h-5 w-5" /> },
+  { titleKey: 'nav.calendar', href: '/calendar', icon: <Calendar className="h-5 w-5" /> },
+  { titleKey: 'nav.checklists', href: '/checklists', icon: <CheckSquare className="h-5 w-5" /> },
+  { titleKey: 'nav.documents', href: '/documents', icon: <FileText className="h-5 w-5" /> },
+  { titleKey: 'nav.forum', href: '/forum', icon: <MessagesSquare className="h-5 w-5" /> },
+  { titleKey: 'nav.chat', href: '/chat', icon: <MessageSquare className="h-5 w-5" /> },
 ]
 
 const analyticsItems: NavItem[] = [
-  {
-    title: 'Activitat',
-    href: '/activity',
-    icon: <Activity className="h-5 w-5" />,
-  },
-  {
-    title: 'Informes',
-    href: '/reports',
-    icon: <BarChart3 className="h-5 w-5" />,
-  },
-  {
-    title: 'Carrega',
-    href: '/workload',
-    icon: <Users className="h-5 w-5" />,
-  },
-  {
-    title: 'Comparador',
-    href: '/compare',
-    icon: <Scale className="h-5 w-5" />,
-  },
-  {
-    title: 'Assoliments',
-    href: '/achievements',
-    icon: <Trophy className="h-5 w-5" />,
-  },
+  { titleKey: 'nav.activity', href: '/activity', icon: <Activity className="h-5 w-5" /> },
+  { titleKey: 'nav.reports', href: '/reports', icon: <BarChart3 className="h-5 w-5" /> },
+  { titleKey: 'nav.workload', href: '/workload', icon: <Users className="h-5 w-5" /> },
+  { titleKey: 'nav.compare', href: '/compare', icon: <Scale className="h-5 w-5" /> },
+  { titleKey: 'nav.achievements', href: '/achievements', icon: <Trophy className="h-5 w-5" /> },
 ]
 
 const adminItems: NavItem[] = [
-  {
-    title: 'Panel Admin',
-    href: '/admin',
-    icon: <Shield className="h-5 w-5" />,
-  },
-  {
-    title: 'Configuració',
-    href: '/settings',
-    icon: <Settings className="h-5 w-5" />,
-  },
+  { titleKey: 'nav.adminPanel', href: '/admin', icon: <Shield className="h-5 w-5" /> },
+  { titleKey: 'nav.settings', href: '/settings', icon: <Settings className="h-5 w-5" /> },
 ]
 
 type SidebarProps = {
@@ -131,6 +69,7 @@ type SidebarProps = {
 
 export function Sidebar({ isAdmin = false, collapsed = false }: SidebarProps) {
   const pathname = usePathname()
+  const { t } = useTranslation()
   const [adminOpen, setAdminOpen] = useState(true)
 
   return (
@@ -170,7 +109,7 @@ export function Sidebar({ isAdmin = false, collapsed = false }: SidebarProps) {
                   )}
                 >
                   {item.icon}
-                  {!collapsed && <span>{item.title}</span>}
+                  {!collapsed && <span>{t(item.titleKey)}</span>}
                   {!collapsed && item.badge && (
                     <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-medium text-primary-foreground">
                       {item.badge}
@@ -186,7 +125,7 @@ export function Sidebar({ isAdmin = false, collapsed = false }: SidebarProps) {
         {!collapsed && (
           <div className="mt-6">
             <div className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Analitica
+              {t('nav.sectionAnalytics')}
             </div>
             <ul className="mt-1 space-y-1">
               {analyticsItems.map((item) => {
@@ -203,7 +142,7 @@ export function Sidebar({ isAdmin = false, collapsed = false }: SidebarProps) {
                       )}
                     >
                       {item.icon}
-                      <span>{item.title}</span>
+                      <span>{t(item.titleKey)}</span>
                     </Link>
                   </li>
                 )
@@ -219,7 +158,7 @@ export function Sidebar({ isAdmin = false, collapsed = false }: SidebarProps) {
               onClick={() => setAdminOpen(!adminOpen)}
               className="flex w-full items-center gap-2 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground"
             >
-              <span>Administració</span>
+              <span>{t('nav.sectionAdmin')}</span>
               <ChevronDown
                 className={cn(
                   'ml-auto h-4 w-4 transition-transform',
@@ -243,7 +182,7 @@ export function Sidebar({ isAdmin = false, collapsed = false }: SidebarProps) {
                         )}
                       >
                         {item.icon}
-                        <span>{item.title}</span>
+                        <span>{t(item.titleKey)}</span>
                       </Link>
                     </li>
                   )
@@ -266,7 +205,7 @@ export function Sidebar({ isAdmin = false, collapsed = false }: SidebarProps) {
           )}
         >
           <Bell className="h-5 w-5" />
-          {!collapsed && <span>Notificacions</span>}
+          {!collapsed && <span>{t('nav.notifications')}</span>}
         </Link>
       </div>
     </aside>

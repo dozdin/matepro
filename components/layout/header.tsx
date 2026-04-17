@@ -14,6 +14,8 @@ import {
   ChevronDown,
 } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { LanguageToggle } from '@/components/language-toggle'
+import { useTranslation } from '@/lib/i18n/provider'
 import type { AuthUser } from '@/lib/auth'
 
 type HeaderProps = {
@@ -24,6 +26,7 @@ type HeaderProps = {
 
 export function Header({ user, onMenuToggle, notificationCount = 0 }: HeaderProps) {
   const router = useRouter()
+  const { t } = useTranslation()
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
 
@@ -50,7 +53,7 @@ export function Header({ user, onMenuToggle, notificationCount = 0 }: HeaderProp
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Cercar projectes, tasques..."
+              placeholder={t('header.searchPlaceholder')}
               className="h-10 w-80 rounded-lg border border-input bg-muted/50 pl-10 pr-4 text-sm placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
               onFocus={() => setSearchOpen(true)}
               onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
@@ -58,7 +61,7 @@ export function Header({ user, onMenuToggle, notificationCount = 0 }: HeaderProp
             {searchOpen && (
               <div className="absolute left-0 top-full mt-2 w-full rounded-lg border border-border bg-popover p-2 shadow-lg">
                 <p className="px-2 py-3 text-center text-sm text-muted-foreground">
-                  Escriu per cercar...
+                  {t('header.typeToSearch')}
                 </p>
               </div>
             )}
@@ -85,6 +88,9 @@ export function Header({ user, onMenuToggle, notificationCount = 0 }: HeaderProp
             </span>
           )}
         </Link>
+
+        {/* Language toggle */}
+        <LanguageToggle />
 
         {/* Theme toggle */}
         <ThemeToggle />
@@ -129,7 +135,7 @@ export function Header({ user, onMenuToggle, notificationCount = 0 }: HeaderProp
                       onClick={() => setUserMenuOpen(false)}
                     >
                       <User className="h-4 w-4" />
-                      El meu perfil
+                      {t('header.myProfile')}
                     </Link>
                     <Link
                       href="/settings"
@@ -137,7 +143,7 @@ export function Header({ user, onMenuToggle, notificationCount = 0 }: HeaderProp
                       onClick={() => setUserMenuOpen(false)}
                     >
                       <Settings className="h-4 w-4" />
-                      Configuració
+                      {t('header.settings')}
                     </Link>
                   </div>
                   <div className="border-t border-border py-1">
@@ -146,7 +152,7 @@ export function Header({ user, onMenuToggle, notificationCount = 0 }: HeaderProp
                       className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-destructive hover:bg-destructive/10"
                     >
                       <LogOut className="h-4 w-4" />
-                      Tancar sessió
+                      {t('header.logout')}
                     </button>
                   </div>
                 </div>

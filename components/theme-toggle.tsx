@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Moon, Sun, Monitor } from "lucide-react"
 import { useTheme } from "@/components/theme-provider"
+import { useTranslation } from "@/lib/i18n/provider"
 import { cn } from "@/lib/utils"
 
 type ThemeValue = "light" | "dark" | "system"
