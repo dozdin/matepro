@@ -32,6 +32,7 @@ export type TranslationDict = {
     minutesAgoShort: string
     hoursAgoShort: string
     daysAgo: string
+    clearFilter: string
   }
   nav: {
     dashboard: string
@@ -132,6 +133,13 @@ export type TranslationDict = {
     quickNewEventDesc: string
     quickUploadDoc: string
     quickUploadDocDesc: string
+    taskMap: string
+    activeTasks: string
+    noActiveTasks: string
+    bubbleSize: string
+    clickToOpen: string
+    priority: string
+    complete: string
   }
   notifications: {
     title: string
@@ -270,6 +278,7 @@ const ca: TranslationDict = {
     minutesAgoShort: "Fa {n} min",
     hoursAgoShort: "Fa {n}h",
     daysAgo: "Fa {n} dies",
+    clearFilter: "Treure filtre",
   },
   nav: {
     dashboard: "Dashboard",
@@ -370,6 +379,13 @@ const ca: TranslationDict = {
     quickNewEventDesc: "Programar al calendari",
     quickUploadDoc: "Pujar Document",
     quickUploadDocDesc: "Afegir arxiu o plànol",
+    taskMap: "Mapa de tasques",
+    activeTasks: "tasques actives",
+    noActiveTasks: "No hi ha tasques actives",
+    bubbleSize: "Mida = prioritat",
+    clickToOpen: "Fes clic per obrir",
+    priority: "prioritat",
+    complete: "completat",
   },
   notifications: {
     title: "Notificacions",
@@ -508,6 +524,7 @@ const en: TranslationDict = {
     minutesAgoShort: "{n} min ago",
     hoursAgoShort: "{n}h ago",
     daysAgo: "{n} days ago",
+    clearFilter: "Clear filter",
   },
   nav: {
     dashboard: "Dashboard",
@@ -608,6 +625,13 @@ const en: TranslationDict = {
     quickNewEventDesc: "Schedule in calendar",
     quickUploadDoc: "Upload Document",
     quickUploadDocDesc: "Add file or blueprint",
+    taskMap: "Task Map",
+    activeTasks: "active tasks",
+    noActiveTasks: "No active tasks",
+    bubbleSize: "Size = priority",
+    clickToOpen: "Click to open",
+    priority: "priority",
+    complete: "complete",
   },
   notifications: {
     title: "Notifications",
@@ -746,6 +770,7 @@ const fr: TranslationDict = {
     minutesAgoShort: "Il y a {n} min",
     hoursAgoShort: "Il y a {n}h",
     daysAgo: "Il y a {n} jours",
+    clearFilter: "Effacer le filtre",
   },
   nav: {
     dashboard: "Tableau de bord",
@@ -846,6 +871,13 @@ const fr: TranslationDict = {
     quickNewEventDesc: "Planifier au calendrier",
     quickUploadDoc: "Téléverser un document",
     quickUploadDocDesc: "Ajouter un fichier ou un plan",
+    taskMap: "Carte des taches",
+    activeTasks: "taches actives",
+    noActiveTasks: "Aucune tache active",
+    bubbleSize: "Taille = priorite",
+    clickToOpen: "Cliquer pour ouvrir",
+    priority: "priorite",
+    complete: "termine",
   },
   notifications: {
     title: "Notifications",
@@ -984,6 +1016,7 @@ const it: TranslationDict = {
     minutesAgoShort: "{n} min fa",
     hoursAgoShort: "{n}h fa",
     daysAgo: "{n} giorni fa",
+    clearFilter: "Rimuovi filtro",
   },
   nav: {
     dashboard: "Dashboard",
@@ -1084,6 +1117,13 @@ const it: TranslationDict = {
     quickNewEventDesc: "Pianifica nel calendario",
     quickUploadDoc: "Carica documento",
     quickUploadDocDesc: "Aggiungi file o progetto",
+    taskMap: "Mappa attivita",
+    activeTasks: "attivita attive",
+    noActiveTasks: "Nessuna attivita attiva",
+    bubbleSize: "Dimensione = priorita",
+    clickToOpen: "Clicca per aprire",
+    priority: "priorita",
+    complete: "completato",
   },
   notifications: {
     title: "Notifiche",
@@ -1222,6 +1262,7 @@ const de: TranslationDict = {
     minutesAgoShort: "Vor {n} Min.",
     hoursAgoShort: "Vor {n} Std.",
     daysAgo: "Vor {n} Tagen",
+    clearFilter: "Filter entfernen",
   },
   nav: {
     dashboard: "Dashboard",
@@ -1322,6 +1363,13 @@ const de: TranslationDict = {
     quickNewEventDesc: "Im Kalender planen",
     quickUploadDoc: "Dokument hochladen",
     quickUploadDocDesc: "Datei oder Plan hinzufügen",
+    taskMap: "Aufgabenkarte",
+    activeTasks: "aktive Aufgaben",
+    noActiveTasks: "Keine aktiven Aufgaben",
+    bubbleSize: "Grosse = Prioritat",
+    clickToOpen: "Klicken zum Offnen",
+    priority: "Prioritat",
+    complete: "abgeschlossen",
   },
   notifications: {
     title: "Benachrichtigungen",
